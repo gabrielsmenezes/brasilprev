@@ -31,20 +31,24 @@ public class CostumerRegistrationIntegrationTest {
 
     @Test
     public void shouldSaveACostumerSuccessfullyAndReturnStatus201AndReturnSavedCostumer() throws Exception {
-        HashMap<String, String> costumer = new HashMap<>();
-        costumer.put("name", "john Doe");
-        costumer.put("cpf", "268.261.660-70");
-        costumer.put("address", "Avenue Street n 192, USA");
-
+        HashMap<String, String> costumer = createCostumerMap("john Doe", "268.261.660-70", "Avenue Street n 192, USA");
         String costumerJson = this.mapper.writeValueAsString(costumer);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(PATH).contentType(MediaType.APPLICATION_JSON).content(costumerJson);
-
         MockHttpServletResponse response = this.mockMvc.perform(request).andReturn().getResponse();
+
         HashMap returnedCostumer = this.mapper.readValue(response.getContentAsString(), HashMap.class);
 
         Assertions.assertEquals(HttpStatus.CREATED.value(), response.getStatus());
         Assertions.assertNotNull(returnedCostumer.get("id"));
+    }
+
+    private HashMap<String, String> createCostumerMap(String name, String cpf, String address) {
+        HashMap<String, String> costumer = new HashMap<>();
+        costumer.put("name", name);
+        costumer.put("cpf", cpf);
+        costumer.put("address", address);
+        return costumer;
     }
 
 }
