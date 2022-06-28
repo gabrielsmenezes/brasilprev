@@ -1,6 +1,6 @@
 package com.example.brasilprev.domain;
 
-import com.example.brasilprev.service.costumer.insert.CostumerInsertInput;
+import com.example.brasilprev.service.costumer.insert.CustomerInsertInput;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Costumer {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,16 +17,16 @@ public class Costumer {
     private String cpf;
     private String address;
 
-    public Costumer() {}
+    public Customer() {}
 
-    public Costumer(Long id, String name, String cpf, String address) {
+    public Customer(Long id, String name, String cpf, String address) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;
         this.address = address;
     }
 
-    public Costumer(CostumerInsertInput input) {
+    public Customer(CustomerInsertInput input) {
         this(null, input.name(), input.cpf(), input.address());
     }
 

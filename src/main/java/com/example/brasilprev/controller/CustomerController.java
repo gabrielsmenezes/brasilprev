@@ -1,8 +1,8 @@
 package com.example.brasilprev.controller;
 
-import com.example.brasilprev.service.costumer.insert.CostumerInsert;
-import com.example.brasilprev.service.costumer.insert.CostumerInsertInput;
-import com.example.brasilprev.service.costumer.insert.CostumerInsertOutput;
+import com.example.brasilprev.service.costumer.insert.CustomerInsert;
+import com.example.brasilprev.service.costumer.insert.CustomerInsertInput;
+import com.example.brasilprev.service.costumer.insert.CustomerInsertOutput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,17 +14,17 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/costumer")
-public class CostumerController {
+public class CustomerController {
 
-    private final CostumerInsert insert;
+    private final CustomerInsert insert;
 
-    public CostumerController(CostumerInsert insert) {
+    public CustomerController(CustomerInsert insert) {
         this.insert = insert;
     }
 
     @PostMapping
-    public ResponseEntity<CostumerInsertOutput> insert(@RequestBody CostumerInsertInput input) {
-        CostumerInsertOutput output = this.insert.execute(input);
+    public ResponseEntity<CustomerInsertOutput> insert(@RequestBody CustomerInsertInput input) {
+        CustomerInsertOutput output = this.insert.execute(input);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(output.id()).toUri();
 
