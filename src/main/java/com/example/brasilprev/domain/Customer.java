@@ -2,10 +2,8 @@ package com.example.brasilprev.domain;
 
 import com.example.brasilprev.service.costumer.insert.CustomerInsertInput;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Customer {
@@ -13,8 +11,17 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotEmpty(message = "name should not be empty")
+    @Column(nullable = false)
     private String name;
+
+    @NotEmpty(message = "cpf should not be empty")
+    @Column(nullable = false)
     private String cpf;
+
+    @NotEmpty(message = "address should not be empty")
+    @Column(nullable = false)
     private String address;
 
     public Customer() {}

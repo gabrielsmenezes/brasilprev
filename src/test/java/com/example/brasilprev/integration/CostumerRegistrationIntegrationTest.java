@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.HashMap;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,14 +25,35 @@ import java.util.HashMap;
 public class CostumerRegistrationIntegrationTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String PATH = "/costumer";
+    private final String PATH = "/customer";
 
     @Autowired
     private MockMvc mockMvc;
 
+    private HashMap<String, String> createCustomerMap(String name, String cpf, String address) {
+        HashMap<String, String> costumer = new HashMap<>();
+        costumer.put("name", name);
+        costumer.put("cpf", cpf);
+        costumer.put("address", address);
+        return costumer;
+    }
+
+    private void executeTestWithoutRequiredFields(String name, String cpf, String address, String field) throws Exception {
+        HashMap<String, String> costumer = createCustomerMap(name, cpf, address);
+        String costumerJson = this.mapper.writeValueAsString(costumer);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(PATH).contentType(MediaType.APPLICATION_JSON).content(costumerJson);
+        MockHttpServletResponse response = this.mockMvc.perform(request).andReturn().getResponse();
+
+        List<String> message = this.mapper.readValue(response.getContentAsString(), List.class);
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        Assertions.assertTrue(message.stream().anyMatch(msg -> msg.contains(field)));
+    }
+
     @Test
-    public void shouldSaveACostumerSuccessfullyAndReturnStatus201AndReturnSavedCostumer() throws Exception {
-        HashMap<String, String> costumer = createCostumerMap("john Doe", "268.261.660-70", "Avenue Street n 192, USA");
+    public void shouldSaveACustomerSuccessfullyAndReturnStatus201AndReturnSavedCustomer() throws Exception {
+        HashMap<String, String> costumer = createCustomerMap("John Doe", "268.261.660-70", "Avenue Street n 192, USA");
         String costumerJson = this.mapper.writeValueAsString(costumer);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(PATH).contentType(MediaType.APPLICATION_JSON).content(costumerJson);
@@ -43,12 +65,18 @@ public class CostumerRegistrationIntegrationTest {
         Assertions.assertNotNull(returnedCostumer.get("id"));
     }
 
-    private HashMap<String, String> createCostumerMap(String name, String cpf, String address) {
-        HashMap<String, String> costumer = new HashMap<>();
-        costumer.put("name", name);
-        costumer.put("cpf", cpf);
-        costumer.put("address", address);
-        return costumer;
+    @Test
+    public void shouldNotSaveCustomerWithoutNameAndReturn400AndRequiredMessage() throws Exception {
+        executeTestWithoutRequiredFields("", "268.261.660-70", "Avenue Street n 192, USA", "name");
     }
 
+    @Test
+    public void shouldNotSaveCustomerWithoutCpfAndReturn400AndRequiredMessage() throws Exception {
+        executeTestWithoutRequiredFields("John Doe", "", "Avenue Street n 192, USA", "cpf");
+    }
+
+    @Test
+    public void shouldNotSaveCustomerWithoutAddressAndReturn400AndRequiredMessage() throws Exception {
+        executeTestWithoutRequiredFields("John Doe", "268.261.660-70", "", "address");
+    }
 }
