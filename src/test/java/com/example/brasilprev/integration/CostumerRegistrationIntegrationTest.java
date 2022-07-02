@@ -20,22 +20,22 @@ import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles(profiles = {"test"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CostumerRegistrationIntegrationTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String PATH = "/customer";
+    private final String PATH = "/customers";
 
     @Autowired
     private MockMvc mockMvc;
 
     private HashMap<String, String> createCustomerMap(String name, String cpf, String address) {
-        HashMap<String, String> costumer = new HashMap<>();
-        costumer.put("name", name);
-        costumer.put("cpf", cpf);
-        costumer.put("address", address);
-        return costumer;
+        HashMap<String, String> customer = new HashMap<>();
+        customer.put("name", name);
+        customer.put("cpf", cpf);
+        customer.put("address", address);
+        customer.put("password", "123456789");
+        return customer;
     }
 
     private void executeTestWithoutRequiredFields(String name, String cpf, String address, String field) throws Exception {
