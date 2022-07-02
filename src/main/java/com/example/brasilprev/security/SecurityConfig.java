@@ -22,36 +22,29 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private JWTUtils jwtUtils;
+    private final UserDetailsService userDetailsService;
+    private final Environment env;
+    private final JWTUtils jwtUtils;
 
     private static final String[] PUBLIC_MATCHERS = {
             "/h2-console/**"
     };
 
+    public SecurityConfig(UserDetailsService userDetailsService, Environment env, JWTUtils jwtUtils) {
+        this.userDetailsService = userDetailsService;
+        this.env = env;
+        this.jwtUtils = jwtUtils;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
-            http.headers().frameOptions().disable();
-        }
-
         http.cors().and().csrf().disable();
+
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET).permitAll()
-                .antMatchers(HttpMethod.POST).permitAll()
+                .antMatchers(HttpMethod.POST,"/customers").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/alunos/**").permitAll()
-                .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .anyRequest().authenticated();
+
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtils));
         http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtils, userDetailsService));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

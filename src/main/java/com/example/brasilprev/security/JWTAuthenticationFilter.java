@@ -16,20 +16,18 @@ import java.util.ArrayList;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-
     private JWTUtils jwtUtil;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtils jwtUtil) {
-//        setAuthenticationFailureHandler(new JWTAuthenticationFailureHandler());
+        setAuthenticationFailureHandler(new JWTAuthenticationFailureHandler());
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
-
-
         LoginCredentials credentials = null;
+
         try {
             credentials = new ObjectMapper().readValue(req.getInputStream(), LoginCredentials.class);
         } catch (IOException e) {

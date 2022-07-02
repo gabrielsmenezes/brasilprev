@@ -24,7 +24,7 @@ import java.util.List;
 public class CostumerRegistrationIntegrationTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String PATH = "/customer";
+    private final String PATH = "/customers";
 
     @Autowired
     private MockMvc mockMvc;
