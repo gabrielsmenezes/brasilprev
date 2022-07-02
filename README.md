@@ -34,5 +34,6 @@ Technologies
 - Bean Validation
 - Spring JPA
 - Spring Security with JWT
+- Integration Tests with JUnit and MockMvc
 - Docker
 - Heroku
